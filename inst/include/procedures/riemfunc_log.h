@@ -1,13 +1,13 @@
 #ifndef RIEMFUNC_LOG_H
 #define RIEMFUNC_LOG_H
 
-#include <RcppArmadillo.h>
-#include "../include/riemfactory.h"
+// [[Rcpp::depends(RcppArmadillo)]]
 
-using namespace arma;
+#include <RcppArmadillo.h>
+#include "../include/riemfactory.hpp"
 
 ///////////////////////////////////////////////////////////////
-arma::mat riemfunc_log(arma::mat x, arma::mat y, std::string name){
+inline arma::mat riemfunc_log(arma::mat x, arma::mat y, std::string name){
   if (name=="euclidean"){
     return(euclidean_log(x,y));
   } else if (name=="sphere"){

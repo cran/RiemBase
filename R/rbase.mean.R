@@ -18,8 +18,9 @@
 #' }
 #' 
 #' @examples
-#' ### Generate 10 data points on Sphere S^2 near (0,0,1).
-#' ndata = 10
+#' \donttest{
+#' ### Generate 100 data points on Sphere S^2 near (0,0,1).
+#' ndata = 100
 #' theta = seq(from=-0.99,to=0.99,length.out=ndata)*pi
 #' tmpx  = cos(theta) + rnorm(ndata,sd=0.1)
 #' tmpy  = sin(theta) + rnorm(ndata,sd=0.1)
@@ -33,8 +34,9 @@
 #' data = riemfactory(data, name="sphere")
 #' 
 #' ### Compute Fréchet Mean
-#' out1 = RiemBase::mean(data)
-#' out2 = RiemBase::mean(data,parallel=TRUE) # test parallel implementation
+#' out1 = rbase.mean(data)
+#' out2 = rbase.mean(data,parallel=TRUE) # test parallel implementation
+#' }
 #' 
 #' @references 
 #' \insertRef{karcher_riemannian_1977}{RiemBase}
@@ -45,16 +47,41 @@
 #' 
 #' @author Kisung You
 #' @export
-mean <- function(input, maxiter=496, eps=1e-6, parallel=FALSE){
+rbase.mean <- function(input, maxiter=496, eps=1e-6, parallel=FALSE){
   #-------------------------------------------------------
   # must be of 'riemdata' class
   if ((class(input))!="riemdata"){
-    stop("* mean : the input must be of 'riemdata' class. Use 'riemfactory' first to manage your data.")
+    stop("* rbase.mean : the input must be of 'riemdata' class. Use 'riemfactory' first to manage your data.")
   }
   # acquire manifold name
   mfdname = tolower(input$name)
   # stack data as 3d matrices
   newdata = aux_stack3d(input)
+  
+  #-------------------------------------------------------
+  # calculate
+  nCores = parallel::detectCores()
+  
+  # must be of 'riemdata' class
+  nCores = parallel::detectCores()
+  if (parallel==FALSE){
+    output = engine_mean(newdata, mfdname, as.integer(maxiter), as.double(eps))
+  } else {
+    if ((nCores==1)||(is.na(nCores))){
+      output = engine_mean(newdata, mfdname, as.integer(maxiter), as.double(eps))
+    } else {
+      output = engine_mean_openmp(newdata, mfdname, as.integer(maxiter), as.double(eps), nCores)
+    }  
+  }
+  
+  return(output)
+}
+
+#' @keywords internal
+#' @noRd
+rbase.mean.cube <- function(datacube, mfdname, maxiter=496, eps=1e-6, parallel=FALSE){
+  #-------------------------------------------------------
+  newdata = datacube
   
   #-------------------------------------------------------
   # calculate

@@ -1,13 +1,13 @@
 #ifndef RIEMFUNC_EXP_H
 #define RIEMFUNC_EXP_H
 
-#include <RcppArmadillo.h>
-#include "../include/riemfactory.h"
+// [[Rcpp::depends(RcppArmadillo)]]
 
-using namespace arma;
+#include <RcppArmadillo.h>
+#include "../include/riemfactory.hpp"
 
 ///////////////////////////////////////////////////////////////
-arma::mat riemfunc_exp(arma::mat x, arma::mat d, double t, std::string name){
+inline arma::mat riemfunc_exp(arma::mat x, arma::mat d, double t, std::string name){
   if (name=="euclidean"){
     return(euclidean_exp(x,d,t));
   } else if (name=="sphere"){

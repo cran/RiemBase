@@ -1,13 +1,13 @@
 #ifndef RIEMFUNC_NORM_H
 #define RIEMFUNC_NORM_H
 
-#include <RcppArmadillo.h>
-#include "../include/riemfactory.h"
+// [[Rcpp::depends(RcppArmadillo)]]
 
-using namespace arma;
+#include <RcppArmadillo.h>
+#include "../include/riemfactory.hpp"
 
 ///////////////////////////////////////////////////////////////
-double riemfunc_norm(arma::mat x, arma::mat d, std::string name){
+inline double riemfunc_norm(arma::mat x, arma::mat d, std::string name){
   if (name=="euclidean"){
     return(euclidean_norm(x,d));
   } else if (name=="sphere"){
